@@ -5,63 +5,13 @@
 <title>El Chancho Rey</title>
 
 <style>
-body {
-  font-family: Arial;
-  background: #fff8f0;
-  margin: 0;
-  padding: 10px;
-}
-
-h1 {
-  text-align: center;
-  color: #b30000;
-}
-
-#buscador {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-
-.producto {
-  background: white;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 6px 0;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
-.oferta {
-  color: red;
-  font-weight: bold;
-}
-
-button {
-  padding: 5px 10px;
-  margin: 3px;
-  border: none;
-  border-radius: 5px;
-}
-
-.agregar { background: #ff6600; color: white; }
-.quitar { background: #ccc; }
-
-#carrito {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  padding: 10px;
-  border-top: 2px solid #ccc;
-}
-
-.enviar {
-  width: 100%;
-  background: green;
-  color: white;
-  font-size: 16px;
-}
+body {font-family: Arial; margin:0; background:#f5f5f5;}
+h1 {background:#b30000; color:white; padding:15px; text-align:center;}
+.categoria {margin:15px; font-size:20px; font-weight:bold;}
+.producto {background:white; margin:10px; padding:10px; border-radius:10px;}
+input {width:60px;}
+button {background:#b30000; color:white; border:none; padding:10px; border-radius:5px;}
+.carrito {position:fixed; bottom:0; width:100%; background:#222; color:white; padding:10px; text-align:center;}
 </style>
 
 </head>
@@ -69,108 +19,115 @@ button {
 <body>
 
 <h1>🐷 El Chancho Rey</h1>
-<p style="text-align:center;">Elegí, sumá y pedí por WhatsApp 👇</p>
 
-<input type="text" id="buscador" placeholder="Buscar producto..." onkeyup="filtrar()">
+<div id="lista"></div>
 
-<div id="productos"></div>
-
-<div id="carrito">
-<h3>🛒 Pedido:</h3>
-<ul id="lista"></ul>
-<button class="enviar" onclick="enviarPedido()">📲 Enviar pedido</button>
+<div class="carrito">
+<button onclick="enviarPedido()">📲 Enviar pedido por WhatsApp</button>
 </div>
 
 <script>
-let carrito = {};
 
 const productos = [
-{nombre:"Asado x 3kg", precio:23750, cat:"Combos", oferta:true},
-{nombre:"Chorizos x 3kg", precio:17100, cat:"Combos", oferta:true},
-{nombre:"Chuletas x 3kg", precio:22600, cat:"Combos"},
-{nombre:"Bondiola", precio:10500, cat:"Cortes"},
-{nombre:"Bondiola artesanal", precio:20200, cat:"Premium", oferta:true},
-{nombre:"Carne picada premium", precio:7930, cat:"Cortes"},
-{nombre:"Chorizo común", precio:6200, cat:"Embutidos"},
-{nombre:"Chorizo bombón", precio:7900, cat:"Embutidos"},
-{nombre:"Chorizo especial/rosca", precio:7850, cat:"Embutidos"},
-{nombre:"Morcilla", precio:5700, cat:"Embutidos"},
-{nombre:"Morcilla bombón", precio:6360, cat:"Embutidos"},
-{nombre:"Panceta ahumada", precio:18000, cat:"Premium"},
-{nombre:"Panceta salada", precio:12200, cat:"Premium"},
-{nombre:"Milanesas", precio:9200, cat:"Listo"},
-{nombre:"Hamburguesas", precio:6700, cat:"Listo"},
-{nombre:"Vacío", precio:9150, cat:"Cortes"},
-{nombre:"Matambre", precio:14500, cat:"Cortes"},
-{nombre:"Solomillo", precio:11480, cat:"Premium"},
-{nombre:"Queso cremoso", precio:9050, cat:"Quesos"},
-{nombre:"Queso sardo", precio:10700, cat:"Quesos"},
-{nombre:"Queso azul", precio:21000, cat:"Quesos"},
-{nombre:"Salame", precio:5000, cat:"Fiambres"},
-{nombre:"Salame crespón", precio:16050, cat:"Fiambres"},
-{nombre:"Salamin", precio:4800, cat:"Fiambres"}
+
+{nombre:"ASADO X 3KG", precio:23750, categoria:"🔥 COMBOS"},
+{nombre:"CHORIZOS X 3KG", precio:17100, categoria:"🔥 COMBOS"},
+{nombre:"CHULETAS X 3KG", precio:22600, categoria:"🔥 COMBOS"},
+{nombre:"CORTE INGLES X 3KG", precio:22600, categoria:"🔥 COMBOS"},
+{nombre:"JAMON C/CUERO RODAJAS X 3KG", precio:19050, categoria:"🔥 COMBOS"},
+
+{nombre:"ASADO CORTADO", precio:8300, categoria:"🥩 CORTES"},
+{nombre:"BONDIOLA", precio:10500, categoria:"🥩 CORTES"},
+{nombre:"BONDIOLA ARTESANAL", precio:20200, categoria:"⭐ PREMIUM"},
+{nombre:"CARNE PICADA PREMIUM", precio:7930, categoria:"🥩 CORTES"},
+{nombre:"CHICHARRON DE CERDO", precio:6000, categoria:"🥩 CORTES"},
+{nombre:"CHULETAS DE CERDO", precio:7980, categoria:"🥩 CORTES"},
+{nombre:"CHULETERO SIN CORTAR", precio:7350, categoria:"🥩 CORTES"},
+{nombre:"CORTE INGLES", precio:7980, categoria:"🥩 CORTES"},
+{nombre:"CUARTO ENTERO C/CUERO", precio:6800, categoria:"🥩 CORTES"},
+{nombre:"GRASA DE CERDO", precio:4700, categoria:"🥩 CORTES"},
+{nombre:"MANTA ASADO ENTERA", precio:8300, categoria:"🥩 CORTES"},
+{nombre:"MANTA ENTERA C/CUERO", precio:8600, categoria:"🥩 CORTES"},
+{nombre:"MATAMBRE", precio:14500, categoria:"🥩 CORTES"},
+{nombre:"MILANESAS", precio:9200, categoria:"🥩 CORTES"},
+{nombre:"PALETA CORTADA", precio:6100, categoria:"🥩 CORTES"},
+{nombre:"PALETA DESHUESADA", precio:8150, categoria:"🥩 CORTES"},
+{nombre:"PALETA PATA ENTERA C/CUERO", precio:5800, categoria:"🥩 CORTES"},
+{nombre:"PALETA PATA ENTERA S/CUERO", precio:6021, categoria:"🥩 CORTES"},
+{nombre:"PULPA DE CUARTO", precio:10900, categoria:"🥩 CORTES"},
+{nombre:"PUNTA DE MATAMBRE", precio:12900, categoria:"🥩 CORTES"},
+{nombre:"RECORTE DE CERDO 70/30", precio:6050, categoria:"🥩 CORTES"},
+{nombre:"SOLOMILLO DE CERDO", precio:11480, categoria:"🥩 CORTES"},
+{nombre:"VACIO", precio:9150, categoria:"🥩 CORTES"},
+
+{nombre:"CHORIZO BOMBON", precio:7900, categoria:"🌭 EMBUTIDOS"},
+{nombre:"CHORIZO COMUN", precio:6200, categoria:"🌭 EMBUTIDOS"},
+{nombre:"CHORIZO ESPECIAL/ROSCA", precio:7850, categoria:"🌭 EMBUTIDOS"},
+{nombre:"LONGANIZA PICADO GRUESO", precio:16500, categoria:"🌭 EMBUTIDOS"},
+{nombre:"MORCILLA BOMBON", precio:6360, categoria:"🌭 EMBUTIDOS"},
+{nombre:"MORCILLA O ROSCA", precio:5700, categoria:"🌭 EMBUTIDOS"},
+{nombre:"SALCHICHA PARRILLERA", precio:12000, categoria:"🌭 EMBUTIDOS"},
+
+{nombre:"HAMBURGUESAS", precio:6700, categoria:"🍔 LISTO PARA COCINAR"},
+{nombre:"TOCINO EN DADOS", precio:4350, categoria:"🍔 LISTO PARA COCINAR"},
+
+{nombre:"JAMON COCIDO DON MATEO", precio:13800, categoria:"🧀 FIAMBRES"},
+{nombre:"MORTADELA BOLOGNA FETEADA", precio:7100, categoria:"🧀 FIAMBRES"},
+{nombre:"MORTADELA DON MATEO", precio:5950, categoria:"🧀 FIAMBRES"},
+{nombre:"MORTADELA MINI", precio:4000, categoria:"🧀 FIAMBRES"},
+{nombre:"QUESO DE CERDO", precio:6350, categoria:"🧀 FIAMBRES"},
+{nombre:"SALAME", precio:5000, categoria:"🧀 FIAMBRES"},
+{nombre:"SALAME CRESPON", precio:16050, categoria:"🧀 FIAMBRES"},
+{nombre:"SALAMIN PICADO FINO", precio:4800, categoria:"🧀 FIAMBRES"},
+
+{nombre:"PATEGRAS", precio:18300, categoria:"🧀 QUESOS"},
+{nombre:"QUESO CREMOSO", precio:9050, categoria:"🧀 QUESOS"},
+{nombre:"QUESO DE CAMPO", precio:9850, categoria:"🧀 QUESOS"},
+{nombre:"QUESO AZUL", precio:21000, categoria:"🧀 QUESOS"},
+{nombre:"QUESO SARDO", precio:10700, categoria:"🧀 QUESOS"},
+
+{nombre:"PAN COMUN 500GR", precio:1200, categoria:"🥖 VARIOS"},
+{nombre:"PATA Y HUESO CORTADO", precio:2300, categoria:"🥖 VARIOS"}
+
 ];
 
-let productosFiltrados = [...productos];
+const lista = document.getElementById("lista");
 
-function mostrarProductos(){
-  const contenedor = document.getElementById("productos");
-  contenedor.innerHTML = "";
+let categorias = {};
 
-  productosFiltrados.forEach(p => {
-    contenedor.innerHTML += `
+productos.forEach(p => {
+  if (!categorias[p.categoria]) categorias[p.categoria] = [];
+  categorias[p.categoria].push(p);
+});
+
+for (let cat in categorias) {
+  lista.innerHTML += `<div class="categoria">${cat}</div>`;
+  
+  categorias[cat].forEach(p => {
+    lista.innerHTML += `
       <div class="producto">
         <b>${p.nombre}</b><br>
-        💲 $${p.precio}<br>
-        ${p.oferta ? '<span class="oferta">🔥 OFERTA</span><br>' : ''}
-        <button class="agregar" onclick="sumar('${p.nombre}')">+</button>
-        <button class="quitar" onclick="restar('${p.nombre}')">-</button>
+        $${p.precio}<br><br>
+        Cantidad: <input type="number" id="${p.nombre}" value="0" min="0">
       </div>
     `;
   });
 }
 
-function filtrar(){
-  const texto = document.getElementById("buscador").value.toLowerCase();
-  productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
-  mostrarProductos();
-}
-
-function sumar(nombre){
-  carrito[nombre] = (carrito[nombre] || 0) + 1;
-  render();
-}
-
-function restar(nombre){
-  if(carrito[nombre]){
-    carrito[nombre]--;
-    if(carrito[nombre] === 0) delete carrito[nombre];
-  }
-  render();
-}
-
-function render(){
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  for (let item in carrito){
-    lista.innerHTML += `<li>${item} x${carrito[item]}</li>`;
-  }
-}
-
 function enviarPedido(){
-  let mensaje = "Hola! Quiero hacer este pedido:%0A";
-
-  for (let item in carrito){
-    mensaje += "- " + item + " x" + carrito[item] + "%0A";
+  let mensaje = "Hola, quiero pedir:%0A";
+  
+  for (let p of productos){
+    let cantidad = document.getElementById(p.nombre).value;
+    
+    if(cantidad > 0){
+      mensaje += `${p.nombre} x ${cantidad}%0A`;
+    }
   }
-
-  mensaje += "%0A¿Me confirmás disponibilidad?";
 
   window.open("https://wa.me/5493456556595?text=" + mensaje);
 }
 
-mostrarProductos();
 </script>
 
 </body>
