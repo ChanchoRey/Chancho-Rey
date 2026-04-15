@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>El Chancho Rey</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #fff8f0;
+  margin: 0;
+  padding: 10px;
+}
+
+h1 {
+  text-align: center;
+  color: #b30000;
+}
+
+#buscador {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.producto {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 6px 0;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.oferta {
+  color: red;
+  font-weight: bold;
+}
+
+button {
+  padding: 5px 10px;
+  margin: 3px;
+  border: none;
+  border-radius: 5px;
+}
+
+.agregar { background: #ff6600; color: white; }
+.quitar { background: #ccc; }
+
+#carrito {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  padding: 10px;
+  border-top: 2px solid #ccc;
+}
+
+.enviar {
+  width: 100%;
+  background: green;
+  color: white;
+  font-size: 16px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🐷 El Chancho Rey</h1>
+<p style="text-align:center;">Elegí, sumá y pedí por WhatsApp 👇</p>
+
+<input type="text" id="buscador" placeholder="Buscar producto..." onkeyup="filtrar()">
+
+<div id="productos"></div>
+
+<div id="carrito">
+<h3>🛒 Pedido:</h3>
+<ul id="lista"></ul>
+<button class="enviar" onclick="enviarPedido()">📲 Enviar pedido</button>
+</div>
+
+<script>
+let carrito = {};
+
+const productos = [
+{nombre:"Asado x 3kg", precio:23750, cat:"Combos", oferta:true},
+{nombre:"Chorizos x 3kg", precio:17100, cat:"Combos", oferta:true},
+{nombre:"Chuletas x 3kg", precio:22600, cat:"Combos"},
+{nombre:"Bondiola", precio:10500, cat:"Cortes"},
+{nombre:"Bondiola artesanal", precio:20200, cat:"Premium", oferta:true},
+{nombre:"Carne picada premium", precio:7930, cat:"Cortes"},
+{nombre:"Chorizo común", precio:6200, cat:"Embutidos"},
+{nombre:"Chorizo bombón", precio:7900, cat:"Embutidos"},
+{nombre:"Chorizo especial/rosca", precio:7850, cat:"Embutidos"},
+{nombre:"Morcilla", precio:5700, cat:"Embutidos"},
+{nombre:"Morcilla bombón", precio:6360, cat:"Embutidos"},
+{nombre:"Panceta ahumada", precio:18000, cat:"Premium"},
+{nombre:"Panceta salada", precio:12200, cat:"Premium"},
+{nombre:"Milanesas", precio:9200, cat:"Listo"},
+{nombre:"Hamburguesas", precio:6700, cat:"Listo"},
+{nombre:"Vacío", precio:9150, cat:"Cortes"},
+{nombre:"Matambre", precio:14500, cat:"Cortes"},
+{nombre:"Solomillo", precio:11480, cat:"Premium"},
+{nombre:"Queso cremoso", precio:9050, cat:"Quesos"},
+{nombre:"Queso sardo", precio:10700, cat:"Quesos"},
+{nombre:"Queso azul", precio:21000, cat:"Quesos"},
+{nombre:"Salame", precio:5000, cat:"Fiambres"},
+{nombre:"Salame crespón", precio:16050, cat:"Fiambres"},
+{nombre:"Salamin", precio:4800, cat:"Fiambres"}
+];
+
+let productosFiltrados = [...productos];
+
+function mostrarProductos(){
+  const contenedor = document.getElementById("productos");
+  contenedor.innerHTML = "";
+
+  productosFiltrados.forEach(p => {
+    contenedor.innerHTML += `
+      <div class="producto">
+        <b>${p.nombre}</b><br>
+        💲 $${p.precio}<br>
+        ${p.oferta ? '<span class="oferta">🔥 OFERTA</span><br>' : ''}
+        <button class="agregar" onclick="sumar('${p.nombre}')">+</button>
+        <button class="quitar" onclick="restar('${p.nombre}')">-</button>
+      </div>
+    `;
+  });
+}
+
+function filtrar(){
+  const texto = document.getElementById("buscador").value.toLowerCase();
+  productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
+  mostrarProductos();
+}
+
+function sumar(nombre){
+  carrito[nombre] = (carrito[nombre] || 0) + 1;
+  render();
+}
+
+function restar(nombre){
+  if(carrito[nombre]){
+    carrito[nombre]--;
+    if(carrito[nombre] === 0) delete carrito[nombre];
+  }
+  render();
+}
+
+function render(){
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  for (let item in carrito){
+    lista.innerHTML += `<li>${item} x${carrito[item]}</li>`;
+  }
+}
+
+function enviarPedido(){
+  let mensaje = "Hola! Quiero hacer este pedido:%0A";
+
+  for (let item in carrito){
+    mensaje += "- " + item + " x" + carrito[item] + "%0A";
+  }
+
+  mensaje += "%0A¿Me confirmás disponibilidad?";
+
+  window.open("https://wa.me/5493456556595?text=" + mensaje);
+}
+
+mostrarProductos();
+</script>
+
+</body>
+</html>
